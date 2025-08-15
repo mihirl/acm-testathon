@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor-deployment
+  namespace: data-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: processor
+  template:
+    metadata:
+      labels:
+        app: processor
+    spec:
+      serviceAccountName: processor-sa
+      containers:
+      - name: ubi
+        image: registry.redhat.io/ubi8/ubi:latest
+        command: ["sleep", "infinity"]
+        envFrom:
+        - secretRef:
+            name: db-secret
+        - configMapRef:
+            name: processor-config

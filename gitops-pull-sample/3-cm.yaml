@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processor-config
+  namespace: data-processor
+data:
+  CONFIG_MODE: "test"

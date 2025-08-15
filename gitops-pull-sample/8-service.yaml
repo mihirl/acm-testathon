@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: processor-service
+  namespace: data-processor
+spec:
+  selector:
+    app: processor
+  ports:
+  - port: 8080
+    targetPort: 8080

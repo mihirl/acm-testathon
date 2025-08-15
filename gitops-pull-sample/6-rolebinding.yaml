@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: processor-rb
+  namespace: data-processor
+subjects:
+- kind: ServiceAccount
+  name: processor-sa
+  namespace: data-processor
+roleRef:
+  kind: Role
+  name: processor-role
+  apiGroup: rbac.authorization.k8s.io
