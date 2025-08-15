@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hello-route
+  namespace: hello-world
+spec:
+  to:
+    kind: Service
+    name: hello-service
+  port:
+    targetPort: 80
+  tls:
+    termination: edge

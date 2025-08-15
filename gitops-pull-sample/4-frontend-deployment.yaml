@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guestbook-frontend
+  namespace: guestbook
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: guestbook
+  template:
+    metadata:
+      labels:
+        app: guestbook
+    spec:
+      containers:
+      - name: guestbook
+        image: registry.redhat.io/rhel8/nginx-120:latest
+        env:
+        - name: REDIS_HOST
+          value: redis
+        volumeMounts:
+        - name: html
+          mountPath: /opt/app-root/src
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: html
+        configMap:
+          name: guestbook-html

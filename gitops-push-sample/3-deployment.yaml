@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-api-deployment
+  namespace: node-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-api
+  template:
+    metadata:
+      labels:
+        app: node-api
+    spec:
+      containers:
+      - name: node-api
+        image: registry.redhat.io/ubi8/nodejs-16:latest
+        command: ["node", "/app/server.js"]
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+        ports:
+        - containerPort: 3000
+      volumes:
+      - name: app-code
+        configMap:
+          name: node-api-config

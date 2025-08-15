@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: node-api-route
+  namespace: node-api
+spec:
+  to:
+    kind: Service
+    name: node-api-service
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
