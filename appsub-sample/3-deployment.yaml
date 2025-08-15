@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: registry.redhat.io/ubi8/nginx-120:latest
+        image: registry.redhat.io/ubi8/nginx-120-runtime:latest
         volumeMounts:
         - name: html
           mountPath: /opt/app-root/src
