@@ -1,3 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: processor-rb
+  namespace: data-processor
+subjects:
+- kind: ServiceAccount
+  name: processor-sa
+  namespace: data-processor
+roleRef:
+  kind: Role
+  name: processor-role
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +33,7 @@ spec:
         image: registry.redhat.io/ubi8/ubi:latest
         command: ["sleep", "infinity"]
         envFrom:
-        - secretRef:
-            name: db-secret
         - configMapRef:
             name: processor-config
+        - configMapRef:
+            name: db-config
