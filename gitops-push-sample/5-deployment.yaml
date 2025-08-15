@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-deployment
+  namespace: log-viewer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: log
+  template:
+    metadata:
+      labels:
+        app: log
+    spec:
+      serviceAccountName: log-sa
+      containers:
+      - name: ubi
+        image: registry.redhat.io/ubi8/ubi:latest
+        command: ["sleep", "infinity"]
+        envFrom:
+        - configMapRef:
+            name: log-config
