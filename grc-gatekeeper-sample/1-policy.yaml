@@ -1,0 +1,79 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-restrict-tag
+  namespace: policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: create-team-test-ns
+        spec:
+          remediationAction: enforce
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: team-test
+          severity: low
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: gatekeeper-restrict-tag-template
+        spec:
+          remediationAction: enforce
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: templates.gatekeeper.sh/v1
+                kind: ConstraintTemplate
+                metadata:
+                  name: k8srestricttag
+                spec:
+                  crd:
+                    spec:
+                      names:
+                        kind: K8sRestrictTag
+                  targets:
+                    - target: admission.k8s.gatekeeper.sh
+                      rego: >
+                        package k8srestricttag
+
+
+                        violation[{"msg": msg}] {
+                          container := input.review.object.spec.containers[_]
+                          endswith(container.image, ":latest")
+                          msg := sprintf("Image %v is using the :latest tag, which is not allowed.", [container.image])
+                        }
+          severity: low
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: gatekeeper-restrict-tag-constraint
+        spec:
+          remediationAction: enforce
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: constraints.gatekeeper.sh/v1beta1
+                kind: K8sRestrictTag
+                metadata:
+                  name: restrict-tag
+                spec:
+                  match:
+                    kinds:
+                      - apiGroups:
+                          - ""
+                        kinds:
+                          - Pod
+                    namespaces:
+                      - team-test
+          severity: low
